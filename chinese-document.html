@@ -152,7 +152,7 @@
         },
       },
       {
-        reg: /\s*([\%\~\!\@\#\$\&\*\_\+\-\=\(\)\:\;\'\?\,\.\/\"\<\>\[\\\]\^\`\{\|\}])\s*/g,
+        reg: /\s*([\%\~\!\@\#\$\&\_\(\)\:\;\'\?\,\/\"\<\>\[\\\]\^\`\{\|\}])\s*/g,
         replacer: function (_) {
           var args = [];
           for (var _i = 1; _i < arguments.length; _i++) {
@@ -162,7 +162,7 @@
         },
       },
       {
-        reg: /[\%\~\!\@\#\$\&\*\_\+\-\=\(\)\:\;\'\?\,\/\"\<\>\[\\\]\^\`\{\|\}]/g,
+        reg: /\s*([\%\~\!\@\#\$\&\_\(\)\:\;\'\?\,\/\"\<\>\[\\\]\^\`\{\|\}])\s*/g,
         replacer: function (substr) {
           return String.fromCharCode(substr.charCodeAt(0) + 65248);
         },
@@ -192,9 +192,19 @@
         },
       },
       {
-        reg: /([a-zA-Z0-9])\./g,
+        reg: /[0-9]％/g,
         replacer: function (substr) {
-          return substr + ' ';
+          return substr.replace('％', '%') + ' ';
+        },
+      },
+      {
+        reg: /([0-9]\.)([\u4e00-\u9fa5]|[a-zA-Z0-9])/g,
+        replacer: function () {
+          var args = [];
+          for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+          }
+          return args[0] + ' ' + args[1];
         },
       },
     ];
