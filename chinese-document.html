@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>中文文档格式化工具</title>
+  </head>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+        'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+        'Helvetica Neue', sans-serif;
+    }
+
+    .wrapper {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      background-color: #fbfbfb;
+      padding: 44px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 22px;
+    }
+
+    textarea {
+      width: 100%;
+      height: calc(100vh - 300px);
+      min-height: 400px;
+      resize: none;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 16px;
+      color: #333;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    textarea:hover,
+    textarea:focus {
+      border: 2px solid #666;
+    }
+
+    .bannar {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: 22px;
+    }
+
+    .bannar button {
+      border: 2px solid #333;
+      padding: 11px 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 128px;
+      height: 48px;
+      margin: 0 11px;
+    }
+
+    .bannar > a {
+      text-decoration: none;
+    }
+
+    .bannar button:hover {
+      border: 2px solid #666;
+      color: #333;
+      background-color: #f3f3f3;
+    }
+  </style>
+
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <h1>中文文档格式化工具</h1>
+        <textarea id="text" autofocus></textarea>
+        <div class="bannar">
+          <button onclick="format()">格式化文档</button>
+          <button onclick="clearVal()">清空</button>
+          <a
+            href="https://www.ruanyifeng.com/blog/2016/10/document_style_guide.html"
+            target="_blank"
+            ><button>写作规范</button></a
+          >
+          <a href="https://github.com/meeken1998" target="_blank"
+            ><button>Github</button></a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    const demoText = `过去10个月，句子互动的业务有了10倍增长，帮助企业10倍提升【私域运营效率】，助力企业解决获客、转化、复购全流程问题。
+客户覆盖电商，线下门店，互联网平台等，包括美团点评，欧莱雅，58同城，猿辅导、一起作业、喜马拉雅、元气森林、薇娅等，其中80%客户来自口碑传播。
+我们的研发团队使用Node.js和Golang进行开发。
+我们为员工发放最新Mac/人体工学椅,零食无限量供应哦！
+
+1. 全日制本科，1年以上工作经验，大型互联网公司或者大型IT企业应用运维经验者优先
+2. 熟悉 Docker技术和对应的 PaaS体系架构。有容器、调度相关经验或了解Docker、Swarm、Kubernetes等相关技术
+3. 掌握一门服务端编程语言（Go/Java/Python/Node.js 等）
+4. 熟悉linux/unix操作系统，熟悉 TCP/HTTP 协议，熟悉性能调优，熟悉使用相关压测，监控等工具
+5. 熟悉阿里云,腾讯云,AWS，GoogleCloud运维者优先
+6. 关注开发效率，注重提升开发和交付效率，喜欢通过工具提高生产力者优先
+7. 优秀的沟通、表达与组织协作团队合作能力，具备一定的创新能力
+`;
+    window.onload = () => {
+      document.getElementById('text').value = demoText;
+    };
+
+    const rules = [
+      {
+        reg: /([a-zA-Z0-9])([\u4e00-\u9fa5])/g,
+        replacer: function (_) {
+          var args = [];
+          for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+          }
+          return args[0] + ' ' + args[1];
+        },
+      },
+      {
+        reg: /([\u4e00-\u9fa5])([a-zA-Z0-9])/g,
+        replacer: function (_) {
+          var args = [];
+          for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+          }
+          return args[0] + ' ' + args[1];
+        },
+      },
+      {
+        reg: /\s*([\%\~\!\@\#\$\&\*\_\+\-\=\(\)\:\;\'\?\,\.\/\"\<\>\[\\\]\^\`\{\|\}])\s*/g,
+        replacer: function (_) {
+          var args = [];
+          for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+          }
+          return args[0];
+        },
+      },
+      {
+        reg: /[\%\~\!\@\#\$\&\*\_\+\-\=\(\)\:\;\'\?\,\/\"\<\>\[\\\]\^\`\{\|\}]/g,
+        replacer: function (substr) {
+          return String.fromCharCode(substr.charCodeAt(0) + 65248);
+        },
+      },
+      {
+        reg: /【/g,
+        replacer: function () {
+          return '「';
+        },
+      },
+      {
+        reg: /】/g,
+        replacer: function () {
+          return '」';
+        },
+      },
+      {
+        reg: /\S(／)\S/g,
+        replacer: function (substr) {
+          return substr.replace('／', ' / ');
+        },
+      },
+      {
+        reg: / +/g,
+        replacer: function () {
+          return ' ';
+        },
+      },
+      {
+        reg: /([a-zA-Z0-9])\./g,
+        replacer: function (substr) {
+          return substr + ' ';
+        },
+      },
+    ];
+    function replacer(str) {
+      return rules.reduce(function (prev, curr) {
+        return prev.replace(curr.reg, curr.replacer);
+      }, str);
+    }
+    function format() {
+      const val = document.getElementById('text').value;
+      document.getElementById('text').value = replacer(val);
+    }
+    function clearVal() {
+      document.getElementById('text').value = '';
+      document.getElementById('text').focus();
+    }
+  </script>
+</html>
